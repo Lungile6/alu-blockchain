@@ -76,4 +76,24 @@ int ec_save(EC_KEY *key, char const *folder);
  */
 EC_KEY *ec_load(char const *folder);
 
+#define SIG_MAX_LEN 72
+
+typedef struct sig_s
+{
+uint8_t     sig[SIG_MAX_LEN];
+uint8_t     len;
+} sig_t;
+
+/**
+ * ec_sign - Signs a given set of bytes, using a given EC_KEY private key
+ * @key: Pointer to the EC_KEY structure containing the private key
+ * @msg: Pointer to the characters to be signed
+ * @msglen: Length of the message to sign
+ * @sig: Address at which to store the signature
+ *
+ * Return: Pointer to the signature buffer (sig->sig) or NULL on failure
+ */
+uint8_t *ec_sign(EC_KEY const *key, uint8_t const *msg,
+size_t msglen, sig_t *sig);
+
 #endif /* HBLK_CRYPTO_H */
