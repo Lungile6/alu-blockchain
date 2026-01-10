@@ -4,6 +4,8 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <openssl/sha.h>
+#include <sys/stat.h>
+#include <openssl/pem.h>
 
 /* OpenSSL Headers */
 #include <openssl/sha.h>
@@ -54,5 +56,14 @@ uint8_t *ec_to_pub(EC_KEY const *key, uint8_t pub[EC_PUB_LEN]);
  * Return: Pointer to the created EC_KEY structure, or NULL upon failure
  */
 EC_KEY *ec_from_pub(uint8_t const pub[EC_PUB_LEN]);
+
+/**
+ * ec_save - Saves an existing EC key pair on the disk
+ * @key: Points to the EC key pair to be saved
+ * @folder: Path to the folder in which to save the keys
+ *
+ * Return: 1 upon success, 0 upon failure
+ */
+int ec_save(EC_KEY *key, char const *folder);
 
 #endif /* HBLK_CRYPTO_H */
