@@ -107,4 +107,15 @@ typedef struct sig_s sig_t;
 uint8_t *ec_sign(EC_KEY const *key, uint8_t const *msg,
 size_t msglen, sig_t *sig);
 
+/**
+ * ec_verify - Verifies the signature of a given set of bytes
+ * @key: Pointer to the EC_KEY structure containing the public key
+ * @msg: Pointer to the characters to verify the signature of
+ * @msglen: Length of the message to verify
+ * @sig: Pointer to the signature to be checked
+ *
+ * Return: 1 if the signature is valid, and 0 otherwise
+ */
+int ec_verify(EC_KEY const *key, uint8_t const *msg, size_t msglen, sig_t const *sig);
+
 #endif /* HBLK_CRYPTO_H */
