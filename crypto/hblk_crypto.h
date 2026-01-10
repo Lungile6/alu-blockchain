@@ -116,6 +116,7 @@ size_t msglen, sig_t *sig);
  *
  * Return: 1 if the signature is valid, and 0 otherwise
  */
-int ec_verify(EC_KEY const *key, uint8_t const *msg, size_t msglen, sig_t const *sig);
+int ec_verify(EC_KEY const *key, uint8_t const *msg,
+size_t msglen, sig_t const *sig);
 
 #endif /* HBLK_CRYPTO_H */
