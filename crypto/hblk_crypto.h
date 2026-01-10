@@ -76,19 +76,24 @@ int ec_save(EC_KEY *key, char const *folder);
  */
 EC_KEY *ec_load(char const *folder);
 
+#define SIG_MAX_LEN 72
+
 /**
  * struct sig_s - EC signature structure
  *
  * @sig: Signature buffer
  * @len: Actual signature length
  */
-#define SIG_MAX_LEN 72
-
-typedef struct sig_s
+struct sig_s
 {
-uint8_t     sig[SIG_MAX_LEN];
-uint8_t     len;
-} sig_t;
+	uint8_t sig[SIG_MAX_LEN];
+	uint8_t len;
+};
+
+/**
+ * sig_t - Typedef for struct sig_s
+ */
+typedef struct sig_s sig_t;
 
 /**
  * ec_sign - Signs a given set of bytes, using a given EC_KEY private key
