@@ -76,6 +76,12 @@ int ec_save(EC_KEY *key, char const *folder);
  */
 EC_KEY *ec_load(char const *folder);
 
+/**
+ * struct sig_s - EC signature structure
+ *
+ * @sig: Signature buffer
+ * @len: Actual signature length
+ */
 #define SIG_MAX_LEN 72
 
 typedef struct sig_s
