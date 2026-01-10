@@ -1,5 +1,7 @@
 #ifndef HBLK_CRYPTO_H
 #define HBLK_CRYPTO_H
+#define PUB_FILENAME "key_pub.pem"
+#define PRI_FILENAME "key.pem"
 
 #include <stddef.h>
 #include <stdint.h>
@@ -65,5 +67,13 @@ EC_KEY *ec_from_pub(uint8_t const pub[EC_PUB_LEN]);
  * Return: 1 upon success, 0 upon failure
  */
 int ec_save(EC_KEY *key, char const *folder);
+
+/**
+ * ec_load - Loads an EC key pair from the disk
+ * @folder: Path to the folder from which to load the keys
+ *
+ * Return: Pointer to the created EC_KEY structure, or NULL upon failure
+ */
+EC_KEY *ec_load(char const *folder);
 
 #endif /* HBLK_CRYPTO_H */
