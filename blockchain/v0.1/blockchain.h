@@ -73,4 +73,7 @@ block_t *block_create(block_t const *prev, int8_t const *data,
 /* block_destroy.c */
 void block_destroy(block_t *block);
 
+/* blockchain_destroy.c */
+void blockchain_destroy(blockchain_t *blockchain);
+
 #endif /* BLOCKCHAIN_H */
