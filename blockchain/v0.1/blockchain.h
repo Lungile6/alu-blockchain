@@ -80,4 +80,8 @@ void blockchain_destroy(blockchain_t *blockchain);
 uint8_t *block_hash(block_t const *block,
 		    uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
 
+/* blockchain_serialize.c */
+int blockchain_serialize(blockchain_t const *blockchain,
+		   char const *path);
+
 #endif /* BLOCKCHAIN_H */
