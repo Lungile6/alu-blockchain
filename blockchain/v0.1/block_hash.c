@@ -18,8 +18,9 @@ uint8_t *block_hash(block_t const *block,
 	if (!block || !hash_buf)
 		return (NULL);
 
-	/* * Calculate length: block_info_t size + the actual data length stored.
-	 * Since 'info' and 'data' are the first two fields in block_t, 
+	/**
+	     * Calculate length: block_info_t size + the actual data length stored.
+	 * Since 'info' and 'data' are the first two fields in block_t,
 	 * we hash from the start of the block.
 	 */
 	len = sizeof(block->info) + block->data.len;
