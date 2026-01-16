@@ -2,6 +2,7 @@
 #define BLOCKCHAIN_H
 
 #include <stdint.h>
+#include <time.h>
 #include <llist.h>
 
 /* Constants */
@@ -64,5 +65,9 @@ typedef struct blockchain_s
 
 /* Function Prototypes */
 blockchain_t *blockchain_create(void);
+
+/* block_create.c */
+block_t *block_create(block_t const *prev, int8_t const *data,
+		      uint32_t data_len);
 
 #endif /* BLOCKCHAIN_H */
