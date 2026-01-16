@@ -76,4 +76,8 @@ void block_destroy(block_t *block);
 /* blockchain_destroy.c */
 void blockchain_destroy(blockchain_t *blockchain);
 
+/* block_hash.c */
+uint8_t *block_hash(block_t const *block,
+		    uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
+
 #endif /* BLOCKCHAIN_H */
