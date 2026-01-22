@@ -5,9 +5,12 @@
 #include <time.h>
 #include <llist.h>
 
-/* Dependencies */
-#include "transaction/transaction.h"
+/* * 1. Include Dependencies FIRST 
+ * Note: transaction.h must be included before any prototypes 
+ * that use transaction_t or tx_out_t.
+ */
 #include "../../crypto/hblk_crypto.h"
+#include "transaction/transaction.h"
 
 /* Constants */
 #define GENESIS_TIMESTAMP 1537578000
@@ -16,12 +19,6 @@
 
 /**
  * struct block_info_s - Block info structure
- *
- * @index:      Index of the Block in the Blockchain
- * @difficulty: Difficulty of proof of work (hash leading zero bits)
- * @timestamp:  Time the Block was created at (UNIX timestamp)
- * @nonce:      Salt value used to alter the Block hash
- * @prev_hash:  Hash of the previous Block in the Blockchain
  */
 typedef struct block_info_s
 {
@@ -34,23 +31,16 @@ typedef struct block_info_s
 
 /**
  * struct block_s - Block structure
- *
- * @info:         Block info
- * @transactions: List of transactions (pointers to transaction_t)
- * @hash:         256-bit digest of the Block, to ensure authenticity
  */
 typedef struct block_s
 {
 	block_info_t    info;
-	llist_t         *transactions;
+	llist_t         *transactions; /* transactions replaces v0.1 buffer */
 	uint8_t         hash[SHA256_DIGEST_LENGTH];
 } block_t;
 
 /**
  * struct blockchain_s - Blockchain structure
- *
- * @chain:   Linked list of pointers to block_t
- * @unspent: List of pointers to unspent_tx_out_t
  */
 typedef struct blockchain_s
 {
@@ -58,31 +48,15 @@ typedef struct blockchain_s
 	llist_t     *unspent;
 } blockchain_t;
 
-/* --- v0.1 Functions --- */
+/* --- Prototypes --- */
 
 blockchain_t *blockchain_create(void);
 void blockchain_destroy(blockchain_t *blockchain);
 void block_destroy(block_t *block);
-uint8_t *block_hash(block_t const *block,
-		    uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
-int blockchain_serialize(blockchain_t const *blockchain, char const *path);
-blockchain_t *blockchain_deserialize(char const *path);
-int block_is_valid(block_t const *block, block_t const *prev_block);
+uint8_t *block_hash(block_t const *block, uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
 
-/* --- v0.2 Functions (Mining/PoW) --- */
-
-int hash_matches_difficulty(uint8_t const hash[SHA256_DIGEST_LENGTH],
-			    uint32_t difficulty);
-void block_mine(block_t *block);
-uint32_t blockchain_difficulty(blockchain_t const *blockchain);
-
-/* --- v0.3 Functions (Transactions) --- */
-
-/* Note: tx_out_create was handled previously, but typically 
-   the block_create prototype changes in v0.3 to use transactions */
-block_t *block_create(block_t const *prev, int8_t const *data,
-		      uint32_t data_len);
-void _block_print(block_t const *block, int index, char const *prefix);
+/* Prototypes for provided printer functions - Adjusted to match .c file signatures */
+int _block_print(block_t const *block, unsigned int index, char const *prefix);
 int _transaction_print_loop(transaction_t const *transaction, int idx, char const *indent);
 
 #endif /* BLOCKCHAIN_H */
