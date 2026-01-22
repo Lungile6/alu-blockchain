@@ -6,7 +6,7 @@
 #include <llist.h>
 
 /* Dependencies */
-#include "transaction.h"
+#include "transaction/transaction.h"
 #include "../../crypto/hblk_crypto.h"
 
 /* Constants */
