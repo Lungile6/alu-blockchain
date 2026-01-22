@@ -6,8 +6,8 @@
 #include <llist.h>
 
 /* Dependencies */
-#include "../../crypto/hblk_crypto.h"
 #include "transaction.h"
+#include "../../crypto/hblk_crypto.h"
 
 /* Constants */
 #define GENESIS_TIMESTAMP 1537578000
@@ -82,5 +82,7 @@ uint32_t blockchain_difficulty(blockchain_t const *blockchain);
    the block_create prototype changes in v0.3 to use transactions */
 block_t *block_create(block_t const *prev, int8_t const *data,
 		      uint32_t data_len);
+void _block_print(block_t const *block, int index, char const *prefix);
+int _transaction_print_loop(transaction_t const *transaction, int idx, char const *indent);
 
 #endif /* BLOCKCHAIN_H */
