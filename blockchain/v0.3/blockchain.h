@@ -5,12 +5,11 @@
 #include <time.h>
 #include <llist.h>
 
-/* * 1. Include Dependencies FIRST 
- * Note: transaction.h must be included before any prototypes 
- * that use transaction_t or tx_out_t.
+/* * 1. Include the transaction header. 
+ * Use the relative path to ensure the compiler finds it.
  */
-#include "../../crypto/hblk_crypto.h"
 #include "transaction/transaction.h"
+#include "../../crypto/hblk_crypto.h"
 
 /* Constants */
 #define GENESIS_TIMESTAMP 1537578000
@@ -35,7 +34,7 @@ typedef struct block_info_s
 typedef struct block_s
 {
 	block_info_t    info;
-	llist_t         *transactions; /* transactions replaces v0.1 buffer */
+	llist_t         *transactions;
 	uint8_t         hash[SHA256_DIGEST_LENGTH];
 } block_t;
 
@@ -48,15 +47,16 @@ typedef struct blockchain_s
 	llist_t     *unspent;
 } blockchain_t;
 
-/* --- Prototypes --- */
-
+/* --- v0.1 & v0.2 Functions --- */
 blockchain_t *blockchain_create(void);
 void blockchain_destroy(blockchain_t *blockchain);
 void block_destroy(block_t *block);
 uint8_t *block_hash(block_t const *block, uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
+int block_is_valid(block_t const *block, block_t const *prev_block);
 
-/* Prototypes for provided printer functions - Adjusted to match .c file signatures */
-int _block_print(block_t const *block, unsigned int index, char const *prefix);
-int _transaction_print_loop(transaction_t const *transaction, int idx, char const *indent);
+/* --- v0.3 Functions --- */
+/* * NOTE: Do NOT include _block_print or _transaction_print_loop here.
+ * Those are defined as STATIC in the .c file and cannot be declared here.
+ */
 
 #endif /* BLOCKCHAIN_H */
