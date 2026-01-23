@@ -74,7 +74,7 @@ uint8_t *block_hash(block_t const *block, uint8_t hash_buf[SHA256_DIGEST_LENGTH]
 int block_is_valid(block_t const *block, block_t const *prev_block);
 
 /* --- v0.3 Functions --- */
-int _block_print(block_t const *block, unsigned int index, char const *prefix);
+/* int _block_print(block_t const *block, unsigned int index, char const *prefix); */
 
 /* --- Printer Prototypes --- */
 /* transaction_t is recognized here because of the guard at the top */
