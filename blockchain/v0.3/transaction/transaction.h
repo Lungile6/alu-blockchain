@@ -5,42 +5,41 @@
 #include <llist.h>
 #include "../../crypto/hblk_crypto.h"
 
-struct transaction_s
-{
-    uint8_t id[32];
+/* --- STEP 1: ONLY ONE TYPEDEF HERE --- */
+#ifndef TRANSACTION_T
+#define TRANSACTION_T
+typedef struct transaction_s transaction_t;
+#endif
+
+/* --- STEP 2: DEFINE STRUCTS --- */
+struct transaction_s {
+    uint8_t id[SHA256_DIGEST_LENGTH];
     llist_t *inputs;
     llist_t *outputs;
 };
 
-/**
- * struct tx_out_s - Transaction output structure
- *
- * @amount: Amount of the transaction
- * @pub: Public key of the transaction receiver
- * @hash: Hash of the transaction output (amount + pub)
- */
-typedef struct tx_out_s
-{
-    uint32_t    amount;
-    uint8_t     pub[65];
-    uint8_t     hash[32];
+typedef struct tx_out_s {
+    uint32_t amount;
+    uint8_t pub[EC_PUB_LEN];
+    uint8_t hash[SHA256_DIGEST_LENGTH];
 } tx_out_t;
 
-typedef struct unspent_tx_out_s
-{
-    uint8_t     block_hash[32];
-    uint8_t     tx_id[32];
-    tx_out_t    out;
+typedef struct unspent_tx_out_s {
+    uint8_t block_hash[SHA256_DIGEST_LENGTH];
+    uint8_t tx_id[SHA256_DIGEST_LENGTH];
+    tx_out_t out;
 } unspent_tx_out_t;
 
-/* --- Function Prototypes --- */
+typedef struct tx_in_s {
+    uint8_t block_hash[SHA256_DIGEST_LENGTH];
+    uint8_t tx_id[SHA256_DIGEST_LENGTH];
+    uint8_t tx_out_hash[SHA256_DIGEST_LENGTH];
+    sig_t sig;
+} tx_in_t;
 
-/* tx_out_create.c */
+/* --- STEP 3: PROTOTYPES (Make sure no typedefs are down here!) --- */
 tx_out_t *tx_out_create(uint32_t amount, uint8_t const pub[EC_PUB_LEN]);
-/* unspent_tx_out_create.c */
-unspent_tx_out_t *unspent_tx_out_create(
-	uint8_t const block_hash[SHA256_DIGEST_LENGTH],
-	uint8_t const tx_id[SHA256_DIGEST_LENGTH],
-	tx_out_t const *out);
+unspent_tx_out_t *unspent_tx_out_create(uint8_t const block_hash[32], uint8_t const tx_id[32], tx_out_t const *out);
+tx_in_t *tx_in_create(unspent_tx_out_t const *unspent);
 
-#endif /* TRANSACTION_H */
+#endif
