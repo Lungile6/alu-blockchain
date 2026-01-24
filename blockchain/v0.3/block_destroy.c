@@ -11,7 +11,8 @@ void block_destroy(block_t *block)
 		return;
 
 	/* Destroy the transaction list and all transactions within it */
-	llist_destroy(block->transactions, 1, (node_rel_t)transaction_destroy);
+	/* We cast transaction_destroy to the generic destructor type */
+	llist_destroy(block->transactions, 1, (void (*)(void *))transaction_destroy);
 
 	free(block);
 }

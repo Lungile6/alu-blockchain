@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "blockchain.h"
 
 /**
@@ -16,6 +17,9 @@ block_t *block_create(block_t const *prev, int8_t const *data,
 	block_t *block;
 	uint32_t len = data_len;
 
+	if (!prev)
+		return (NULL);
+
 	block = malloc(sizeof(*block));
 	if (!block)
 		return (NULL);
@@ -28,10 +32,9 @@ block_t *block_create(block_t const *prev, int8_t const *data,
 	block->data.len = len;
 
 	block->info.index = prev->info.index + 1;
-	block->info.timestamp = time(NULL);
+	block->info.timestamp = (uint32_t)time(NULL);
 	memcpy(block->info.prev_hash, prev->hash, SHA256_DIGEST_LENGTH);
 
-	/* Initialize the transaction list for v0.3 */
 	block->transactions = llist_create(MT_SUPPORT_FALSE);
 	if (!block->transactions)
 	{
