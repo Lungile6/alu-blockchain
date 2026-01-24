@@ -31,12 +31,15 @@ static int validate_inputs(transaction_t const *tx, llist_t *all_unspent,
 	EC_KEY *key;
 
 	count = llist_size(tx->inputs);
+	if (count <= 0)
+		return (0);
+
 	for (i = 0; i < count; i++)
 	{
 		in = llist_get_node_at(tx->inputs, i);
 		utxo = llist_find_node(all_unspent, find_utxo, in->tx_out_hash);
 		if (!utxo)
-			return (0); /* Input refers to non-existent or spent UTXO */
+			return (0);
 
 		key = ec_from_pub(utxo->out.pub);
 		if (!key)
@@ -45,7 +48,7 @@ static int validate_inputs(transaction_t const *tx, llist_t *all_unspent,
 		if (ec_verify(key, tx->id, SHA256_DIGEST_LENGTH, &in->sig) != 1)
 		{
 			EC_KEY_free(key);
-			return (0); /* Signature is invalid for this tx_id */
+			return (0);
 		}
 		EC_KEY_free(key);
 		*total_in += utxo->out.amount;
@@ -65,32 +68,31 @@ int transaction_is_valid(transaction_t const
 {
 	uint8_t check_id[SHA256_DIGEST_LENGTH];
 	uint32_t total_in = 0, total_out = 0;
+	int i, out_count;
 	tx_out_t *out;
-	int i, count;
 
 	if (!transaction || !all_unspent)
 		return (0);
 
-	/* 1. Verify Transaction ID (Hash) - Detects data tampering */
-	if (!transaction_hash(transaction, check_id) ||
-		memcmp(check_id, transaction->id, SHA256_DIGEST_LENGTH) != 0)
+	if (!transaction_hash(transaction, check_id))
 		return (0);
 
-	/* 2. Verify Inputs (UTXO existence, signatures, amount) */
+	if (memcmp(check_id, transaction->id, SHA256_DIGEST_LENGTH) != 0)
+		return (0);
+
 	if (!validate_inputs(transaction, all_unspent, &total_in))
 		return (0);
 
-	/* 3. Sum Outputs */
-	count = llist_size(transaction->outputs);
-	for (i = 0; i < count; i++)
+	out_count = llist_size(transaction->outputs);
+	if (out_count <= 0)
+		return (0);
+
+	for (i = 0; i < out_count; i++)
 	{
 		out = llist_get_node_at(transaction->outputs, i);
-		if (!out)
-			return (0);
 		total_out += out->amount;
 	}
 
-	/* 4. Match Input Amount to Output Amount - No money from thin air */
 	if (total_in != total_out)
 		return (0);
 
