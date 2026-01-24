@@ -69,12 +69,13 @@ typedef struct blockchain_s
 /* --- v0.1 & v0.2 Functions --- */
 blockchain_t *blockchain_create(void);
 void blockchain_destroy(blockchain_t *blockchain);
-void block_destroy(block_t *block);
 uint8_t *block_hash(block_t const *block, uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
 int block_is_valid(block_t const *block, block_t const *prev_block);
 
 /* --- v0.3 Functions --- */
 /* int _block_print(block_t const *block, unsigned int index, char const *prefix); */
+block_t *block_create(block_t const *prev, int8_t const *data, uint32_t data_len);
+void block_destroy(block_t *block);
 
 /* --- Printer Prototypes --- */
 /* transaction_t is recognized here because of the guard at the top */
