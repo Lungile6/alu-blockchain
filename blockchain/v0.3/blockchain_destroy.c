@@ -10,10 +10,10 @@ void blockchain_destroy(blockchain_t *blockchain)
 	if (!blockchain)
 		return;
 
-	/* Destroy the chain of blocks */
+	/* Destroy chain and blocks (using the cast to avoid node_rel_t error) */
 	llist_destroy(blockchain->chain, 1, (void (*)(void *))block_destroy);
 
-	/* Destroy the list of unspent transaction outputs */
+	/* Destroy unspent output list */
 	llist_destroy(blockchain->unspent, 1, free);
 
 	free(blockchain);

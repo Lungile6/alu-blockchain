@@ -9,42 +9,35 @@
  */
 blockchain_t *blockchain_create(void)
 {
-	blockchain_t *blockchain;
-	block_t *genesis;
+	blockchain_t *bc;
+	block_t *gen;
 
-	blockchain = malloc(sizeof(*blockchain));
-	if (!blockchain)
+	bc = malloc(sizeof(*bc));
+	if (!bc)
 		return (NULL);
 
-	blockchain->chain = llist_create(MT_SUPPORT_FALSE);
-	blockchain->unspent = llist_create(MT_SUPPORT_FALSE);
-	if (!blockchain->chain || !blockchain->unspent)
+	bc->chain = llist_create(MT_SUPPORT_FALSE);
+	bc->unspent = llist_create(MT_SUPPORT_FALSE);
+	gen = malloc(sizeof(*gen));
+	if (!bc->chain || !bc->unspent || !gen)
 	{
-		llist_destroy(blockchain->chain, 0, NULL);
-		llist_destroy(blockchain->unspent, 0, NULL);
-		free(blockchain);
-		return (NULL);
+		llist_destroy(bc->chain, 0, NULL), llist_destroy(bc->unspent, 0, NULL);
+		return (free(gen), free(bc), NULL);
 	}
 
-	genesis = malloc(sizeof(*genesis));
-	if (!genesis)
+	memset(gen, 0, sizeof(*gen));
+	memcpy(gen->hash, GENESIS_HASH, SHA256_DIGEST_LENGTH);
+	gen->info.timestamp = GENESIS_TIME;
+	memcpy(gen->data.buffer, GENESIS_DATA, GENESIS_DATA_LEN);
+	gen->data.len = GENESIS_DATA_LEN;
+
+	gen->transactions = llist_create(MT_SUPPORT_FALSE);
+	if (!gen->transactions || llist_add_node(bc->chain, gen, ADD_NODE_FRONT))
 	{
-		llist_destroy(blockchain->chain, 0, NULL);
-		llist_destroy(blockchain->unspent, 0, NULL);
-		free(blockchain);
-		return (NULL);
+		llist_destroy(bc->chain, 0, NULL), llist_destroy(bc->unspent, 0, NULL);
+		return (llist_destroy(gen->transactions, 0, NULL),
+				free(gen), free(bc), NULL);
 	}
 
-	/* Initialize Genesis block (v0.3 requires the transaction list) */
-	memset(genesis, 0, sizeof(*genesis));
-	memcpy(genesis->hash, GENESIS_HASH, SHA256_DIGEST_LENGTH);
-	genesis->info.timestamp = GENESIS_TIMESTAMP;
-	memcpy(genesis->data.buffer, GENESIS_DATA, GENESIS_DATA_LEN);
-	genesis->data.len = GENESIS_DATA_LEN;
-	genesis->transactions = llist_create(MT_SUPPORT_FALSE);
-
-	if (llist_add_node(blockchain->chain, genesis, ADD_NODE_FRONT) != 0)
-		return (NULL);
-
-	return (blockchain);
+	return (bc);
 }
