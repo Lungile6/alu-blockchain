@@ -24,16 +24,21 @@ blockchain_t *blockchain_create(void)
 		llist_destroy(bc->chain, 0, NULL), llist_destroy(bc->unspent, 0, NULL);
 		return (free(gen), free(bc), NULL);
 	}
+
 	memset(gen, 0, sizeof(*gen));
 	memcpy(gen->hash, GENESIS_HASH, SHA256_DIGEST_LENGTH);
 	gen->info.timestamp = GENESIS_TIME;
 	memcpy(gen->data.buffer, GENESIS_DATA, GENESIS_DATA_LEN);
 	gen->data.len = GENESIS_DATA_LEN;
-	gen->transactions = llist_create(MT_SUPPORT_FALSE);
-	if (!gen->transactions || llist_add_node(bc->chain, gen, ADD_NODE_FRONT))
+
+	/* Set to NULL so the printer displays [-1] */
+	gen->transactions = NULL;
+
+	if (llist_add_node(bc->chain, gen, ADD_NODE_FRONT))
 	{
 		llist_destroy(bc->chain, 0, NULL), llist_destroy(bc->unspent, 0, NULL);
-		return (llist_destroy(gen->transactions, 1, free), free(gen), free(bc), NULL);
+		return (free(gen), free(bc), NULL);
 	}
+
 	return (bc);
 }
