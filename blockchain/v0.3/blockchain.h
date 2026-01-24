@@ -71,7 +71,7 @@ typedef struct blockchain_s
 blockchain_t *blockchain_create(void);
 void blockchain_destroy(blockchain_t *blockchain);
 uint8_t *block_hash(block_t const *block, uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
-int block_is_valid(block_t const *block, block_t const *prev_block);
+/* int block_is_valid(block_t const *block, block_t const *prev_block); */
 
 /* --- v0.3 Functions --- */
 /* int _block_print(block_t const *block, unsigned int index, char const *prefix); */
@@ -79,6 +79,8 @@ block_t *block_create(block_t const *prev, int8_t const *data, uint32_t data_len
 void block_destroy(block_t *block);
 /* block_hash.c */
 uint8_t *block_hash(block_t const *block, uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
+/* block_is_valid.c */
+int block_is_valid(block_t const *block, block_t const *prev_block, llist_t *all_unspent);
 
 /* --- Printer Prototypes --- */
 /* transaction_t is recognized here because of the guard at the top */
@@ -86,5 +88,10 @@ void _blockchain_print(blockchain_t const *blockchain);
 void _blockchain_print_brief(blockchain_t const *blockchain);
 int _transaction_print_loop(transaction_t const *transaction,
 	unsigned int idx, char const *indent);
+
+/* Difficulty & Mining */
+int hash_matches_difficulty(uint8_t const hash[SHA256_DIGEST_LENGTH], uint32_t difficulty);
+void block_mine(block_t *block);
+uint32_t blockchain_difficulty(blockchain_t const *blockchain);
 
 #endif /* BLOCKCHAIN_H */
