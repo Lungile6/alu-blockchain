@@ -41,5 +41,8 @@ typedef struct tx_in_s {
 tx_out_t *tx_out_create(uint32_t amount, uint8_t const pub[EC_PUB_LEN]);
 unspent_tx_out_t *unspent_tx_out_create(uint8_t const block_hash[32], uint8_t const tx_id[32], tx_out_t const *out);
 tx_in_t *tx_in_create(unspent_tx_out_t const *unspent);
+/* transaction_hash.c */
+uint8_t *transaction_hash(transaction_t const *transaction,
+    uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
 
 #endif
