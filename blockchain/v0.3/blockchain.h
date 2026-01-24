@@ -1,5 +1,5 @@
-#ifndef BLOCKCHAIN_H
-#define BLOCKCHAIN_H
+#ifndef _BLOCKCHAIN_H_
+#define _BLOCKCHAIN_H_
 
 #include <stdint.h>
 #include <time.h>
@@ -17,10 +17,10 @@ typedef struct transaction_s transaction_t;
 #include "../../crypto/hblk_crypto.h"
 
 /* --- Constants --- */
-#define GENESIS_TIMESTAMP 1537578000
-#define GENESIS_DATA_LEN 16
 #define GENESIS_DATA "Holberton School"
-#define GENESIS_HASH "\xc5\x2c\x26\xc8\xb5\x46\x16\x39\x63\x5d\x8e\xdf\x2a\x97\xd4\x8d\x0c\x8e\x00\x09\xc8\x17\xf2\xb1\xd3\xd7\xff\x2f\x04\x51\x58\x03"
+#define GENESIS_DATA_LEN 16
+#define GENESIS_TIME 1537578000
+#define GENESIS_HASH "\xc5\x2c\x26\x56\xc5\x73\x45\x85\x45\x1e\x10\x0a\xbc\xda\x03\x3b\x1f\x41\x10\x5d\x88\xed\x3f\x1c\x9e\x1c\x40\x14\xcd\x00\x00\x00"
 
 #define BLOCKCHAIN_DATA_MAX 1024
 
