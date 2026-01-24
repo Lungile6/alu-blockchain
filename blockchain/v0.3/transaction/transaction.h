@@ -5,6 +5,8 @@
 #include <llist.h>
 #include "../../crypto/hblk_crypto.h"
 
+#define COINBASE_AMOUNT 50
+
 /* --- STEP 1: ONLY ONE TYPEDEF HERE --- */
 #ifndef TRANSACTION_T
 #define TRANSACTION_T
@@ -67,5 +69,7 @@ transaction_t *transaction_create(EC_KEY const *sender, EC_KEY const *receiver,
               	  uint32_t amount, llist_t *all_unspent);
 /* transaction_is_valid.c */
 int transaction_is_valid(transaction_t const *transaction, llist_t *all_unspent);
+/* coinbase_create.c */
+transaction_t *coinbase_create(EC_KEY const *receiver, uint32_t block_index);
 
 #endif
