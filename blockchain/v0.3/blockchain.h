@@ -81,6 +81,10 @@ void block_destroy(block_t *block);
 uint8_t *block_hash(block_t const *block, uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
 /* block_is_valid.c */
 int block_is_valid(block_t const *block, block_t const *prev_block, llist_t *all_unspent);
+/* blockchain_serialize.c */
+int blockchain_serialize(blockchain_t const *blockchain, char const *path);
+/* blockchain_deserialize.c */
+blockchain_t *blockchain_deserialize(char const *path);
 
 /* --- Printer Prototypes --- */
 /* transaction_t is recognized here because of the guard at the top */

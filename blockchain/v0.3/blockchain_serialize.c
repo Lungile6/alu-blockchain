@@ -1,74 +1,82 @@
-#include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include "blockchain.h"
 
 /**
- * write_block - Writes a single block to the file
- * @node: Pointer to the block_t node
- * @idx: Index of the node (unused)
- * @arg: The file pointer (FILE *)
- *
+ * serialize_tx - Helper to serialize transactions within a block
+ * @fd: File descriptor
+ * @transactions: List of transactions
  * Return: 0 on success, -1 on failure
  */
-static int write_block(llist_node_t node, unsigned int idx, void *arg)
+static int serialize_tx(int fd, llist_t *transactions)
 {
-	block_t *block = (block_t *)node;
-	FILE *fp = (FILE *)arg;
+	int i, j, nb_tx, nb_in, nb_out;
+	transaction_t *tx;
+	tx_in_t *in;
+	tx_out_t *out;
 
-	(void)idx;
-
-	if (!block || !fp)
-		return (-1);
-
-	/* Write Block Info */
-	fwrite(&(block->info), sizeof(block->info), 1, fp);
-	/* Write Block Data Length */
-	fwrite(&(block->data.len), sizeof(block->data.len), 1, fp);
-	/* Write Block Data Buffer */
-	fwrite(block->data.buffer, block->data.len, 1, fp);
-	/* Write Block Hash */
-	fwrite(block->hash, SHA256_DIGEST_LENGTH, 1, fp);
-
+	nb_tx = llist_size(transactions);
+	write(fd, &nb_tx, 4);
+	for (i = 0; i < nb_tx; i++)
+	{
+		tx = llist_get_node_at(transactions, i);
+		write(fd, tx->id, 32);
+		nb_in = llist_size(tx->inputs);
+		nb_out = llist_size(tx->outputs);
+		write(fd, &nb_in, 4);
+		write(fd, &nb_out, 4);
+		for (j = 0; j < nb_in; j++)
+		{
+			in = llist_get_node_at(tx->inputs, j);
+			write(fd, in, 169);
+		}
+		for (j = 0; j < nb_out; j++)
+		{
+			out = llist_get_node_at(tx->outputs, j);
+			write(fd, out, 101);
+		}
+	}
 	return (0);
 }
 
 /**
  * blockchain_serialize - Serializes a Blockchain into a file
  * @blockchain: Pointer to the Blockchain to serialize
- * @path: Path to the output file
- *
+ * @path: Path to the file
  * Return: 0 on success, -1 on failure
  */
 int blockchain_serialize(blockchain_t const *blockchain, char const *path)
 {
-	FILE *fp;
-	uint8_t magic[] = "HBLK";
-	uint8_t version[] = "0.1";
-	uint8_t endian = 1; /* 1 for Little Endian */
-	int32_t blocks_count;
+	int fd, i, nb_blocks, nb_unspent;
+	block_t *block;
+	unspent_tx_out_t *unspent;
+	uint8_t endian = _get_endianness();
 
 	if (!blockchain || !path)
 		return (-1);
-
-	fp = fopen(path, "wb");
-	if (!fp)
+	fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd == -1)
 		return (-1);
-
-	blocks_count = llist_size(blockchain->chain);
-
-	/* Write Header: Magic, Version, Endian, Block Count */
-	fwrite(magic, 4, 1, fp);
-	fwrite(version, 3, 1, fp);
-	fwrite(&endian, 1, 1, fp);
-	fwrite(&blocks_count, 4, 1, fp);
-
-	/* Use llist_for_each to iterate and write every block */
-	if (llist_for_each(blockchain->chain, write_block, fp) == -1)
+	nb_blocks = llist_size(blockchain->chain);
+	nb_unspent = llist_size(blockchain->unspent);
+	write(fd, "HBLK0.3", 7);
+	write(fd, &endian, 1);
+	write(fd, &nb_blocks, 4);
+	write(fd, &nb_unspent, 4);
+	for (i = 0; i < nb_blocks; i++)
 	{
-		fclose(fp);
-		return (-1);
+		block = llist_get_node_at(blockchain->chain, i);
+		write(fd, &block->info, 56);
+		write(fd, &block->data.len, 4);
+		write(fd, block->data.buffer, block->data.len);
+		write(fd, block->hash, 32);
+		serialize_tx(fd, block->transactions);
 	}
-
-	fclose(fp);
-	return (0);
+	for (i = 0; i < nb_unspent; i++)
+	{
+		unspent = llist_get_node_at(blockchain->unspent, i);
+		write(fd, unspent, 165);
+	}
+	return (close(fd) == -1 ? -1 : 0);
 }
