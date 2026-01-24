@@ -47,5 +47,8 @@ uint8_t *transaction_hash(transaction_t const *transaction,
 /* tx_in_sign.c */
 sig_t *tx_in_sign(tx_in_t *in, uint8_t const tx_id[SHA256_DIGEST_LENGTH],
                   EC_KEY const *sender, llist_t *all_unspent);
+/* transaction_create.c */
+transaction_t *transaction_create(EC_KEY const *sender, EC_KEY const *receiver,
+              	  uint32_t amount, llist_t *all_unspent);
 
 #endif
