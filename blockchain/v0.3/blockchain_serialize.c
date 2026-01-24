@@ -7,6 +7,7 @@
  * serialize_tx - Helper to serialize transactions within a block
  * @fd: File descriptor
  * @transactions: List of transactions
+ *
  * Return: 0 on success, -1 on failure
  */
 static int serialize_tx(int fd, llist_t *transactions)
@@ -44,6 +45,7 @@ static int serialize_tx(int fd, llist_t *transactions)
  * blockchain_serialize - Serializes a Blockchain into a file
  * @blockchain: Pointer to the Blockchain to serialize
  * @path: Path to the file
+ *
  * Return: 0 on success, -1 on failure
  */
 int blockchain_serialize(blockchain_t const *blockchain, char const *path)

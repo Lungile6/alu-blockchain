@@ -67,6 +67,9 @@ typedef struct blockchain_s
 	llist_t     *unspent;
 } blockchain_t;
 
+/* Provided helper functions */
+uint8_t _get_endianness(void);
+
 /* --- v0.1 & v0.2 Functions --- */
 blockchain_t *blockchain_create(void);
 void blockchain_destroy(blockchain_t *blockchain);
