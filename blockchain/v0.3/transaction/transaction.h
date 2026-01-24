@@ -37,6 +37,21 @@ typedef struct tx_in_s {
     sig_t sig;
 } tx_in_t;
 
+/**
+ * struct utxo_search_s - Helper for gathering UTXOs
+ * @sender_pub: Public key of the sender
+ * @amount: Amount to send
+ * @collected: Amount gathered so far
+ * @inputs: List of inputs being created
+ */
+typedef struct utxo_search_s
+{
+	uint8_t sender_pub[EC_PUB_LEN];
+	uint32_t amount;
+	uint32_t collected;
+	llist_t *inputs;
+} utxo_search_t;
+
 /* --- STEP 3: PROTOTYPES (Make sure no typedefs are down here!) --- */
 tx_out_t *tx_out_create(uint32_t amount, uint8_t const pub[EC_PUB_LEN]);
 unspent_tx_out_t *unspent_tx_out_create(uint8_t const block_hash[32], uint8_t const tx_id[32], tx_out_t const *out);
