@@ -36,15 +36,16 @@ static int validate_inputs(transaction_t const *tx, llist_t *all_unspent,
 		in = llist_get_node_at(tx->inputs, i);
 		utxo = llist_find_node(all_unspent, find_utxo, in->tx_out_hash);
 		if (!utxo)
-			return (0);
+			return (0); /* Input refers to non-existent or spent UTXO */
 
 		key = ec_from_pub(utxo->out.pub);
 		if (!key)
 			return (0);
-		if (!ec_verify(key, tx->id, SHA256_DIGEST_LENGTH, &in->sig))
+
+		if (ec_verify(key, tx->id, SHA256_DIGEST_LENGTH, &in->sig) != 1)
 		{
 			EC_KEY_free(key);
-			return (0);
+			return (0); /* Signature is invalid for this tx_id */
 		}
 		EC_KEY_free(key);
 		*total_in += utxo->out.amount;
@@ -70,7 +71,7 @@ int transaction_is_valid(transaction_t const
 	if (!transaction || !all_unspent)
 		return (0);
 
-	/* 1. Verify Transaction ID (Hash) */
+	/* 1. Verify Transaction ID (Hash) - Detects data tampering */
 	if (!transaction_hash(transaction, check_id) ||
 		memcmp(check_id, transaction->id, SHA256_DIGEST_LENGTH) != 0)
 		return (0);
@@ -84,9 +85,14 @@ int transaction_is_valid(transaction_t const
 	for (i = 0; i < count; i++)
 	{
 		out = llist_get_node_at(transaction->outputs, i);
+		if (!out)
+			return (0);
 		total_out += out->amount;
 	}
 
-	/* 4. Match Input Amount to Output Amount */
-	return (total_in == total_out);
+	/* 4. Match Input Amount to Output Amount - No money from thin air */
+	if (total_in != total_out)
+		return (0);
+
+	return (1);
 }
