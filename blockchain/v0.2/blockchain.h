@@ -76,5 +76,6 @@ blockchain_t *blockchain_deserialize(char const *path);
 
 /* Provided */
 uint8_t _get_endianness(void);
+block_t const _genesis_block(void);
 
 #endif
