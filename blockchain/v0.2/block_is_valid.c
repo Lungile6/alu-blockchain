@@ -1,5 +1,5 @@
-#include "blockchain.h"
 #include <string.h>
+#include "blockchain.h"
 
 /**
  * block_is_valid - Verifies if a Block is valid
@@ -11,29 +11,31 @@
 int block_is_valid(block_t const *block, block_t const *prev_block)
 {
 	uint8_t computed_hash[SHA256_DIGEST_LENGTH];
-	block_t const genesis = _genesis_block();
 
 	if (!block)
 		return (1);
 
-	/* 1. Genesis Block Check */
+	/* 1. Genesis Block Check (Index 0) */
 	if (block->info.index == 0)
-		return (memcmp(block, &genesis, sizeof(genesis)));
+	{
+		/* Compare against the extern _genesis variable */
+		return (memcmp(block, &_genesis, sizeof(_genesis)) != 0);
+	}
 
+	/* 2. Basic Chain Integrity */
 	if (!prev_block || block->info.index != prev_block->info.index + 1)
 		return (1);
 
-	/* 2. Previous Hash Consistency */
-	if (memcmp(block->info.prev_hash, prev_block->hash, SHA256_DIGEST_LENGTH))
+	if (memcmp(block->info.prev_hash, prev_block->hash, SHA256_DIGEST_LENGTH) != 0)
 		return (1);
 
-	/* 3. Proof of Work Check (v0.2 specific) */
+	/* 3. Proof of Work Check (v0.2) */
 	if (!hash_matches_difficulty(block->hash, block->info.difficulty))
 		return (1);
 
-	/* 4. Hash Authenticity Check */
+	/* 4. Hash Consistency Check */
 	block_hash(block, computed_hash);
-	if (memcmp(block->hash, computed_hash, SHA256_DIGEST_LENGTH))
+	if (memcmp(block->hash, computed_hash, SHA256_DIGEST_LENGTH) != 0)
 		return (1);
 
 	return (0);

@@ -57,6 +57,8 @@ typedef struct blockchain_s
 	llist_t *chain;
 } blockchain_t;
 
+extern block_t const _genesis;
+
 /* Prototypes */
 blockchain_t *blockchain_create(void);
 void blockchain_destroy(blockchain_t *blockchain);
@@ -64,7 +66,6 @@ block_t *block_create(block_t const *prev, int8_t const *data, uint32_t data_len
 void block_destroy(block_t *block);
 uint8_t *block_hash(block_t const *block, uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
 int block_is_valid(block_t const *block, block_t const *prev_block);
-/* Provided by the project */
 block_t _genesis_block(void);
 
 /* v0.2 specific */
