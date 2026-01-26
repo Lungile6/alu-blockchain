@@ -26,7 +26,8 @@ int block_is_valid(block_t const *block, block_t const *prev_block)
 	if (!prev_block || block->info.index != prev_block->info.index + 1)
 		return (1);
 
-	if (memcmp(block->info.prev_hash, prev_block->hash, SHA256_DIGEST_LENGTH) != 0)
+	if (memcmp(block->info.prev_hash, prev_block->hash,
+			SHA256_DIGEST_LENGTH) != 0)
 		return (1);
 
 	/* 3. Proof of Work Check (v0.2) */
