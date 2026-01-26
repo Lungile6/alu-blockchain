@@ -11,14 +11,14 @@
 int block_is_valid(block_t const *block, block_t const *prev_block)
 {
 	uint8_t computed_hash[SHA256_DIGEST_LENGTH];
-	block_t const _genesis = _genesis_block();
+	block_t const genesis = _genesis_block();
 
 	if (!block)
 		return (1);
 
 	/* 1. Genesis Block Check */
 	if (block->info.index == 0)
-		return (memcmp(block, &_genesis, sizeof(_genesis)));
+		return (memcmp(block, &genesis, sizeof(genesis)));
 
 	if (!prev_block || block->info.index != prev_block->info.index + 1)
 		return (1);

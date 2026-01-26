@@ -64,6 +64,8 @@ block_t *block_create(block_t const *prev, int8_t const *data, uint32_t data_len
 void block_destroy(block_t *block);
 uint8_t *block_hash(block_t const *block, uint8_t hash_buf[SHA256_DIGEST_LENGTH]);
 int block_is_valid(block_t const *block, block_t const *prev_block);
+/* Provided by the project */
+block_t _genesis_block(void);
 
 /* v0.2 specific */
 int hash_matches_difficulty(uint8_t const hash[SHA256_DIGEST_LENGTH], uint32_t difficulty);
@@ -76,6 +78,5 @@ blockchain_t *blockchain_deserialize(char const *path);
 
 /* Provided */
 uint8_t _get_endianness(void);
-block_t const _genesis_block(void);
 
 #endif
