@@ -95,6 +95,7 @@ void _blockchain_print(blockchain_t const *blockchain);
 void _blockchain_print_brief(blockchain_t const *blockchain);
 int _transaction_print_loop(transaction_t const *transaction,
 	unsigned int idx, char const *indent);
+llist_t *blockchain_get_unspent(blockchain_t const *blockchain);
 
 /* Difficulty & Mining */
 int hash_matches_difficulty(uint8_t const hash[SHA256_DIGEST_LENGTH], uint32_t difficulty);

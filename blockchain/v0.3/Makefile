@@ -16,7 +16,9 @@ SRC_BLOCK = blockchain_create.c \
             block_is_valid.c \
             hash_matches_difficulty.c \
             blockchain_difficulty.c \
-            block_mine.c
+	    blockchain_get_unspent.c \
+            block_mine.c \
+	    endianness.c
 
 # Source files from the transaction subdirectory
 SRC_TX = transaction/tx_out_create.c \
